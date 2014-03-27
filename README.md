@@ -26,14 +26,17 @@ Add:
 include 'kamailio'
 in your node definition.
 
-
+Run
+---
 sudo puppet apply -v environments/ENVIRONMENT/manifests/site.pp --modulepath modules/:/etc/puppet/modules/ --show_diff --noop
 
--- INSTALL A 3RD PARTY MODULE
+Install a 3rd party module
+--------------------------
 
 $ sudo puppet module install
 
--- RUN PUPPET-LINT
+Run puppet-lint
+---------------
 
 $ puppet-lint --no-80chars-check --with-filename modules/kamailio/manifests/
 
@@ -41,6 +44,7 @@ Author
 ------
 
 Truphone Labs
+Giacomo Vacca <giacomo.vacca@gmail.com>
 
 License
 -------
