@@ -50,3 +50,13 @@ License
 -------
 
 See LICENSE file.
+
+##Limitations
+
+This module has been built and tested with Puppet 2.7 and higher.
+
+The module has been tested on:
+* Debian 7
+
+##Contributors
+The list of contributors can be found at: [https://github.com/trulabs/puppet-kamailio/graphs/contributors](https://github.com/trulabs/puppet-kamailio/graphs/contributors)
