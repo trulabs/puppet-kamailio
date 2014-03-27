@@ -11,10 +11,10 @@
 #
 # Several features can be enabled using '#!define WITH_FEATURE' directives:
 #
-# *** To run in debug mode:
+# *** To run in debug mode: 
 #     - define WITH_DEBUG
 #
-# *** To enable mysql:
+# *** To enable mysql: 
 #     - define WITH_MYSQL
 #
 # *** To enable authentication execute:
@@ -121,7 +121,7 @@ import_file "kamailio-local.cfg"
 
 # - flags
 #   FLT_ - per transaction (message) flags
-# FLB_ - per branch flags
+#	FLB_ - per branch flags
 #!define FLT_ACC 1
 #!define FLT_ACCMISSED 2
 #!define FLT_ACCFAILED 3
@@ -159,15 +159,13 @@ children=4
 /* add local domain aliases */
 #alias="sip.mydomain.com"
 
-/* uncomment and configure the following line if you want Kamailio to
+/* uncomment and configure the following line if you want Kamailio to 
    bind on a specific interface/port/proto (default bind on all available) */
 #listen=udp:10.0.0.10:5060
 
 /* port to listen to
  * - can be specified more than once if needed to listen on many ports */
 port=5060
-
-<% if with_tls %>#!define WITH_TLS<% end %>
 
 #!ifdef WITH_TLS
 enable_tls=yes
@@ -211,7 +209,7 @@ voicemail.srv_port = "5060" desc "VoiceMail Port"
 #!ifdef WITH_SRCPATH
 mpath="modules_k:modules"
 #!else
-mpath="/usr/local/lib/kamailio/modules_k/:/usr/lib64/kamailio/modules/:/usr/lib/x86_64-linux-gnu/kamailio/modules/"
+mpath="/usr/local/lib/kamailio/modules_k/:/usr/lib/x86_64-linux-gnu/kamailio/modules/"
 #!endif
 
 #!ifdef WITH_MYSQL
@@ -332,9 +330,9 @@ modparam("acc", "detect_direction", 0)
 /* account triggers (flags) */
 modparam("acc", "log_flag", FLT_ACC)
 modparam("acc", "log_missed_flag", FLT_ACCMISSED)
-modparam("acc", "log_extra",
- "src_user=$fU;src_domain=$fd;src_ip=$si;"
- "dst_ouser=$tU;dst_user=$rU;dst_domain=$rd")
+modparam("acc", "log_extra", 
+	"src_user=$fU;src_domain=$fd;src_ip=$si;"
+	"dst_ouser=$tU;dst_user=$rU;dst_domain=$rd")
 modparam("acc", "failed_transaction_flag", FLT_ACCFAILED)
 /* enhanced DB accounting */
 #!ifdef WITH_ACCDB
@@ -342,8 +340,8 @@ modparam("acc", "db_flag", FLT_ACC)
 modparam("acc", "db_missed_flag", FLT_ACCMISSED)
 modparam("acc", "db_url", DBURL)
 modparam("acc", "db_extra",
- "src_user=$fU;src_domain=$fd;src_ip=$si;"
- "dst_ouser=$tU;dst_user=$rU;dst_domain=$rd")
+	"src_user=$fU;src_domain=$fd;src_ip=$si;"
+	"dst_ouser=$tU;dst_user=$rU;dst_domain=$rd")
 #!endif
 
 
@@ -456,260 +454,260 @@ modparam("debugger", "cfgtrace", 1)
 # - note: this is the same as route { ... }
 request_route {
 
- # per request initial checks
- route(REQINIT);
+	# per request initial checks
+	route(REQINIT);
 
- # NAT detection
- route(NATDETECT);
+	# NAT detection
+	route(NATDETECT);
 
- # CANCEL processing
- if (is_method("CANCEL"))
- {
-  if (t_check_trans()) {
-       route(RELAY);
-  }
-  exit;
- }
+	# CANCEL processing
+	if (is_method("CANCEL"))
+	{
+		if (t_check_trans()) {
+			route(RELAY);
+		}
+		exit;
+	}
 
- # handle requests within SIP dialogs
- route(WITHINDLG);
+	# handle requests within SIP dialogs
+	route(WITHINDLG);
 
- ### only initial requests (no To tag)
+	### only initial requests (no To tag)
 
- t_check_trans();
+	t_check_trans();
 
- # authentication
- route(AUTH);
+	# authentication
+	route(AUTH);
 
- # record routing for dialog forming requests (in case they are routed)
- # - remove preloaded route headers
- remove_hf("Route");
- if (is_method("INVITE|SUBSCRIBE"))
-  record_route();
+	# record routing for dialog forming requests (in case they are routed)
+	# - remove preloaded route headers
+	remove_hf("Route");
+	if (is_method("INVITE|SUBSCRIBE"))
+		record_route();
 
- # account only INVITEs
- if (is_method("INVITE"))
- {
-  setflag(FLT_ACC); # do accounting
- }
+	# account only INVITEs
+	if (is_method("INVITE"))
+	{
+		setflag(FLT_ACC); # do accounting
+	}
 
- # dispatch requests to foreign domains
- route(SIPOUT);
+	# dispatch requests to foreign domains
+	route(SIPOUT);
 
- ### requests for my local domains
+	### requests for my local domains
 
- # handle presence related requests
- route(PRESENCE);
+	# handle presence related requests
+	route(PRESENCE);
 
- # handle registrations
- route(REGISTRAR);
+	# handle registrations
+	route(REGISTRAR);
 
- if ($rU==$null)
- {
-  # request with no Username in RURI
-  sl_send_reply("484","Address Incomplete");
-  exit;
- }
+	if ($rU==$null)
+	{
+		# request with no Username in RURI
+		sl_send_reply("484","Address Incomplete");
+		exit;
+	}
 
- # dispatch destinations to PSTN
- route(PSTN);
+	# dispatch destinations to PSTN
+	route(PSTN);
 
- # user location service
- route(LOCATION);
+	# user location service
+	route(LOCATION);
 }
 
 
 route[RELAY] {
 
- # enable additional event routes for forwarded requests
- # - serial forking, RTP relaying handling, a.s.o.
- if (is_method("INVITE|BYE|SUBSCRIBE|UPDATE")) {
-  if(!t_is_set("branch_route")) t_on_branch("MANAGE_BRANCH");
- }
- if (is_method("INVITE|SUBSCRIBE|UPDATE")) {
-  if(!t_is_set("onreply_route")) t_on_reply("MANAGE_REPLY");
- }
- if (is_method("INVITE")) {
-  if(!t_is_set("failure_route")) t_on_failure("MANAGE_FAILURE");
- }
+	# enable additional event routes for forwarded requests
+	# - serial forking, RTP relaying handling, a.s.o.
+	if (is_method("INVITE|BYE|SUBSCRIBE|UPDATE")) {
+		if(!t_is_set("branch_route")) t_on_branch("MANAGE_BRANCH");
+	}
+	if (is_method("INVITE|SUBSCRIBE|UPDATE")) {
+		if(!t_is_set("onreply_route")) t_on_reply("MANAGE_REPLY");
+	}
+	if (is_method("INVITE")) {
+		if(!t_is_set("failure_route")) t_on_failure("MANAGE_FAILURE");
+	}
 
- if (!t_relay()) {
-  sl_reply_error();
- }
- exit;
+	if (!t_relay()) {
+		sl_reply_error();
+	}
+	exit;
 }
 
 # Per SIP request initial checks
 route[REQINIT] {
 #!ifdef WITH_ANTIFLOOD
- # flood dection from same IP and traffic ban for a while
- # be sure you exclude checking trusted peers, such as pstn gateways
- # - local host excluded (e.g., loop to self)
- if(src_ip!=myself)
- {
-  if($sht(ipban=>$si)!=$null)
-  {
-       # ip is already blocked
-       xdbg("request from blocked IP - $rm from $fu (IP:$si:$sp)\n");
-       exit;
-  }
-  if (!pike_check_req())
-  {
-       xlog("L_ALERT","ALERT: pike blocking $rm from $fu (IP:$si:$sp)\n");
-       $sht(ipban=>$si) = 1;
-       exit;
-  }
- }
+	# flood dection from same IP and traffic ban for a while
+	# be sure you exclude checking trusted peers, such as pstn gateways
+	# - local host excluded (e.g., loop to self)
+	if(src_ip!=myself)
+	{
+		if($sht(ipban=>$si)!=$null)
+		{
+			# ip is already blocked
+			xdbg("request from blocked IP - $rm from $fu (IP:$si:$sp)\n");
+			exit;
+		}
+		if (!pike_check_req())
+		{
+			xlog("L_ALERT","ALERT: pike blocking $rm from $fu (IP:$si:$sp)\n");
+			$sht(ipban=>$si) = 1;
+			exit;
+		}
+	}
 #!endif
 
- if (!mf_process_maxfwd_header("10")) {
-  sl_send_reply("483","Too Many Hops");
-  exit;
- }
+	if (!mf_process_maxfwd_header("10")) {
+		sl_send_reply("483","Too Many Hops");
+		exit;
+	}
 
- if(!sanity_check("1511", "7"))
- {
-  xlog("Malformed SIP message from $si:$sp\n");
-  exit;
- }
+	if(!sanity_check("1511", "7"))
+	{
+		xlog("Malformed SIP message from $si:$sp\n");
+		exit;
+	}
 }
 
 # Handle requests within SIP dialogs
 route[WITHINDLG] {
- if (has_totag()) {
-  # sequential request withing a dialog should
-  # take the path determined by record-routing
-  if (loose_route()) {
-       route(DLGURI);
-       if (is_method("BYE")) {
-         setflag(FLT_ACC); # do accounting ...
-         setflag(FLT_ACCFAILED); # ... even if the transaction fails
-       }
-       else if ( is_method("ACK") ) {
-         # ACK is forwarded statelessy
-         route(NATMANAGE);
-       }
-       else if ( is_method("NOTIFY") ) {
-         # Add Record-Route for in-dialog NOTIFY as per RFC 6665.
-         record_route();
-       }
-       route(RELAY);
-  } else {
-       if (is_method("SUBSCRIBE") && uri == myself) {
-         # in-dialog subscribe requests
-         route(PRESENCE);
-         exit;
-       }
-       if ( is_method("ACK") ) {
-         if ( t_check_trans() ) {
-               # no loose-route, but stateful ACK;
-               # must be an ACK after a 487
-               # or e.g. 404 from upstream server
-               route(RELAY);
-               exit;
-         } else {
-               # ACK without matching transaction ... ignore and discard
-               exit;
-         }
-       }
-       sl_send_reply("404","Not here");
-  }
-  exit;
- }
+	if (has_totag()) {
+		# sequential request withing a dialog should
+		# take the path determined by record-routing
+		if (loose_route()) {
+			route(DLGURI);
+			if (is_method("BYE")) {
+				setflag(FLT_ACC); # do accounting ...
+				setflag(FLT_ACCFAILED); # ... even if the transaction fails
+			}
+			else if ( is_method("ACK") ) {
+				# ACK is forwarded statelessy
+				route(NATMANAGE);
+			}
+			else if ( is_method("NOTIFY") ) {
+				# Add Record-Route for in-dialog NOTIFY as per RFC 6665.
+				record_route();
+			}
+			route(RELAY);
+		} else {
+			if (is_method("SUBSCRIBE") && uri == myself) {
+				# in-dialog subscribe requests
+				route(PRESENCE);
+				exit;
+			}
+			if ( is_method("ACK") ) {
+				if ( t_check_trans() ) {
+					# no loose-route, but stateful ACK;
+					# must be an ACK after a 487
+					# or e.g. 404 from upstream server
+					route(RELAY);
+					exit;
+				} else {
+					# ACK without matching transaction ... ignore and discard
+					exit;
+				}
+			}
+			sl_send_reply("404","Not here");
+		}
+		exit;
+	}
 }
 
 # Handle SIP registrations
 route[REGISTRAR] {
- if (is_method("REGISTER"))
- {
-  if(isflagset(FLT_NATS))
-  {
-       setbflag(FLB_NATB);
-       # uncomment next line to do SIP NAT pinging
-       ## setbflag(FLB_NATSIPPING);
-  }
-  if (!save("location"))
-       sl_reply_error();
+	if (is_method("REGISTER"))
+	{
+		if(isflagset(FLT_NATS))
+		{
+			setbflag(FLB_NATB);
+			# uncomment next line to do SIP NAT pinging 
+			## setbflag(FLB_NATSIPPING);
+		}
+		if (!save("location"))
+			sl_reply_error();
 
-  exit;
- }
+		exit;
+	}
 }
 
 # USER location service
 route[LOCATION] {
 
 #!ifdef WITH_SPEEDDIAL
- # search for short dialing - 2-digit extension
- if($rU=~"^[0-9][0-9]$")
-  if(sd_lookup("speed_dial"))
-       route(SIPOUT);
+	# search for short dialing - 2-digit extension
+	if($rU=~"^[0-9][0-9]$")
+		if(sd_lookup("speed_dial"))
+			route(SIPOUT);
 #!endif
 
 #!ifdef WITH_ALIASDB
- # search in DB-based aliases
- if(alias_db_lookup("dbaliases"))
-  route(SIPOUT);
+	# search in DB-based aliases
+	if(alias_db_lookup("dbaliases"))
+		route(SIPOUT);
 #!endif
 
- $avp(oexten) = $rU;
- if (!lookup("location")) {
-  $var(rc) = $rc;
-  route(TOVOICEMAIL);
-  t_newtran();
-  switch ($var(rc)) {
-       case -1:
-       case -3:
-         send_reply("404", "Not Found");
-         exit;
-       case -2:
-         send_reply("405", "Method Not Allowed");
-         exit;
-  }
- }
+	$avp(oexten) = $rU;
+	if (!lookup("location")) {
+		$var(rc) = $rc;
+		route(TOVOICEMAIL);
+		t_newtran();
+		switch ($var(rc)) {
+			case -1:
+			case -3:
+				send_reply("404", "Not Found");
+				exit;
+			case -2:
+				send_reply("405", "Method Not Allowed");
+				exit;
+		}
+	}
 
- # when routing via usrloc, log the missed calls also
- if (is_method("INVITE"))
- {
-  setflag(FLT_ACCMISSED);
- }
+	# when routing via usrloc, log the missed calls also
+	if (is_method("INVITE"))
+	{
+		setflag(FLT_ACCMISSED);
+	}
 
- route(RELAY);
- exit;
+	route(RELAY);
+	exit;
 }
 
 # Presence server route
 route[PRESENCE] {
- if(!is_method("PUBLISH|SUBSCRIBE"))
-  return;
+	if(!is_method("PUBLISH|SUBSCRIBE"))
+		return;
 
 #!ifdef WITH_PRESENCE
- if (!t_newtran())
- {
-  sl_reply_error();
-  exit;
- };
+	if (!t_newtran())
+	{
+		sl_reply_error();
+		exit;
+	};
 
- if(is_method("PUBLISH"))
- {
-  handle_publish();
-  t_release();
- }
- else
- if( is_method("SUBSCRIBE"))
- {
-  handle_subscribe();
-  t_release();
- }
- exit;
+	if(is_method("PUBLISH"))
+	{
+		handle_publish();
+		t_release();
+	}
+	else
+	if( is_method("SUBSCRIBE"))
+	{
+		handle_subscribe();
+		t_release();
+	}
+	exit;
 #!endif
-
- # if presence enabled, this part will not be executed
- if (is_method("PUBLISH") || $rU==$null)
- {
-  sl_send_reply("404", "Not here");
-  exit;
- }
- return;
+	
+	# if presence enabled, this part will not be executed
+	if (is_method("PUBLISH") || $rU==$null)
+	{
+		sl_send_reply("404", "Not here");
+		exit;
+	}
+	return;
 }
 
 # Authentication route
@@ -717,215 +715,215 @@ route[AUTH] {
 #!ifdef WITH_AUTH
 
 #!ifdef WITH_IPAUTH
- if((!is_method("REGISTER")) && allow_source_address())
- {
-  # source IP allowed
-  return;
- }
+	if((!is_method("REGISTER")) && allow_source_address())
+	{
+		# source IP allowed
+		return;
+	}
 #!endif
 
- if (is_method("REGISTER") || from_uri==myself)
- {
-  # authenticate requests
-  if (!auth_check("$fd", "subscriber", "1")) {
-       auth_challenge("$fd", "0");
-       exit;
-  }
-  # user authenticated - remove auth header
-  if(!is_method("REGISTER|PUBLISH"))
-       consume_credentials();
- }
- # if caller is not local subscriber, then check if it calls
- # a local destination, otherwise deny, not an open relay here
- if (from_uri!=myself && uri!=myself)
- {
-  sl_send_reply("403","Not relaying");
-  exit;
- }
+	if (is_method("REGISTER") || from_uri==myself)
+	{
+		# authenticate requests
+		if (!auth_check("$fd", "subscriber", "1")) {
+			auth_challenge("$fd", "0");
+			exit;
+		}
+		# user authenticated - remove auth header
+		if(!is_method("REGISTER|PUBLISH"))
+			consume_credentials();
+	}
+	# if caller is not local subscriber, then check if it calls
+	# a local destination, otherwise deny, not an open relay here
+	if (from_uri!=myself && uri!=myself)
+	{
+		sl_send_reply("403","Not relaying");
+		exit;
+	}
 
 #!endif
- return;
+	return;
 }
 
 # Caller NAT detection route
 route[NATDETECT] {
 #!ifdef WITH_NAT
- force_rport();
- if (nat_uac_test("19")) {
-  if (is_method("REGISTER")) {
-       fix_nated_register();
-  } else {
-       add_contact_alias();
-  }
-  setflag(FLT_NATS);
- }
+	force_rport();
+	if (nat_uac_test("19")) {
+		if (is_method("REGISTER")) {
+			fix_nated_register();
+		} else {
+			add_contact_alias();
+		}
+		setflag(FLT_NATS);
+	}
 #!endif
- return;
+	return;
 }
 
 # RTPProxy control
 route[NATMANAGE] {
 #!ifdef WITH_NAT
- if (is_request()) {
-  if(has_totag()) {
-       if(check_route_param("nat=yes")) {
-         setbflag(FLB_NATB);
-       }
-  }
- }
- if (!(isflagset(FLT_NATS) || isbflagset(FLB_NATB)))
-  return;
+	if (is_request()) {
+		if(has_totag()) {
+			if(check_route_param("nat=yes")) {
+				setbflag(FLB_NATB);
+			}
+		}
+	}
+	if (!(isflagset(FLT_NATS) || isbflagset(FLB_NATB)))
+		return;
 
- rtpproxy_manage("co");
+	rtpproxy_manage("co");
 
- if (is_request()) {
-  if (!has_totag()) {
-       if(t_is_branch_route()) {
-         add_rr_param(";nat=yes");
-       }
-  }
- }
- if (is_reply()) {
-  if(isbflagset(FLB_NATB)) {
-       add_contact_alias();
-  }
- }
+	if (is_request()) {
+		if (!has_totag()) {
+			if(t_is_branch_route()) {
+				add_rr_param(";nat=yes");
+			}
+		}
+	}
+	if (is_reply()) {
+		if(isbflagset(FLB_NATB)) {
+			add_contact_alias();
+		}
+	}
 #!endif
- return;
+	return;
 }
 
 # URI update for dialog requests
 route[DLGURI] {
 #!ifdef WITH_NAT
- if(!isdsturiset()) {
-  handle_ruri_alias();
- }
+	if(!isdsturiset()) {
+		handle_ruri_alias();
+	}
 #!endif
- return;
+	return;
 }
 
 # Routing to foreign domains
 route[SIPOUT] {
- if (!uri==myself)
- {
-  append_hf("P-hint: outbound\r\n");
-  route(RELAY);
- }
+	if (!uri==myself)
+	{
+		append_hf("P-hint: outbound\r\n");
+		route(RELAY);
+	}
 }
 
 # PSTN GW routing
 route[PSTN] {
 #!ifdef WITH_PSTN
- # check if PSTN GW IP is defined
- if (strempty($sel(cfg_get.pstn.gw_ip))) {
-  xlog("SCRIPT: PSTN rotuing enabled but pstn.gw_ip not defined\n");
-  return;
- }
+	# check if PSTN GW IP is defined
+	if (strempty($sel(cfg_get.pstn.gw_ip))) {
+		xlog("SCRIPT: PSTN rotuing enabled but pstn.gw_ip not defined\n");
+		return;
+	}
 
- # route to PSTN dialed numbers starting with '+' or '00'
- #     (international format)
- # - update the condition to match your dialing rules for PSTN routing
- if(!($rU=~"^(\+|00)[1-9][0-9]{3,20}$"))
-  return;
+	# route to PSTN dialed numbers starting with '+' or '00'
+	#     (international format)
+	# - update the condition to match your dialing rules for PSTN routing
+	if(!($rU=~"^(\+|00)[1-9][0-9]{3,20}$"))
+		return;
 
- # only local users allowed to call
- if(from_uri!=myself) {
-  sl_send_reply("403", "Not Allowed");
-  exit;
- }
+	# only local users allowed to call
+	if(from_uri!=myself) {
+		sl_send_reply("403", "Not Allowed");
+		exit;
+	}
 
- if (strempty($sel(cfg_get.pstn.gw_port))) {
-  $ru = "sip:" + $rU + "@" + $sel(cfg_get.pstn.gw_ip);
- } else {
-  $ru = "sip:" + $rU + "@" + $sel(cfg_get.pstn.gw_ip) + ":"
-               + $sel(cfg_get.pstn.gw_port);
- }
+	if (strempty($sel(cfg_get.pstn.gw_port))) {
+		$ru = "sip:" + $rU + "@" + $sel(cfg_get.pstn.gw_ip);
+	} else {
+		$ru = "sip:" + $rU + "@" + $sel(cfg_get.pstn.gw_ip) + ":"
+					+ $sel(cfg_get.pstn.gw_port);
+	}
 
- route(RELAY);
- exit;
+	route(RELAY);
+	exit;
 #!endif
 
- return;
+	return;
 }
 
 # XMLRPC routing
 #!ifdef WITH_XMLRPC
 route[XMLRPC] {
- # allow XMLRPC from localhost
- if ((method=="POST" || method=="GET")
-       && (src_ip==127.0.0.1)) {
-  # close connection only for xmlrpclib user agents (there is a bug in
-  # xmlrpclib: it waits for EOF before interpreting the response).
-  if ($hdr(User-Agent) =~ "xmlrpclib")
-       set_reply_close();
-  set_reply_no_connect();
-  dispatch_rpc();
-  exit;
- }
- send_reply("403", "Forbidden");
- exit;
+	# allow XMLRPC from localhost
+	if ((method=="POST" || method=="GET")
+			&& (src_ip==127.0.0.1)) {
+		# close connection only for xmlrpclib user agents (there is a bug in
+		# xmlrpclib: it waits for EOF before interpreting the response).
+		if ($hdr(User-Agent) =~ "xmlrpclib")
+			set_reply_close();
+		set_reply_no_connect();
+		dispatch_rpc();
+		exit;
+	}
+	send_reply("403", "Forbidden");
+	exit;
 }
 #!endif
 
 # route to voicemail server
 route[TOVOICEMAIL] {
 #!ifdef WITH_VOICEMAIL
- if(!is_method("INVITE"))
-  return;
+	if(!is_method("INVITE"))
+		return;
 
- # check if VoiceMail server IP is defined
- if (strempty($sel(cfg_get.voicemail.srv_ip))) {
-  xlog("SCRIPT: VoiceMail rotuing enabled but IP not defined\n");
-  return;
- }
- if($avp(oexten)==$null)
-  return;
+	# check if VoiceMail server IP is defined
+	if (strempty($sel(cfg_get.voicemail.srv_ip))) {
+		xlog("SCRIPT: VoiceMail rotuing enabled but IP not defined\n");
+		return;
+	}
+	if($avp(oexten)==$null)
+		return;
 
- $ru = "sip:" + $avp(oexten) + "@" + $sel(cfg_get.voicemail.srv_ip)
-         + ":" + $sel(cfg_get.voicemail.srv_port);
- route(RELAY);
- exit;
+	$ru = "sip:" + $avp(oexten) + "@" + $sel(cfg_get.voicemail.srv_ip)
+				+ ":" + $sel(cfg_get.voicemail.srv_port);
+	route(RELAY);
+	exit;
 #!endif
 
- return;
+	return;
 }
 
 # manage outgoing branches
 branch_route[MANAGE_BRANCH] {
- xdbg("new branch [$T_branch_idx] to $ru\n");
- route(NATMANAGE);
+	xdbg("new branch [$T_branch_idx] to $ru\n");
+	route(NATMANAGE);
 }
 
 # manage incoming replies
 onreply_route[MANAGE_REPLY] {
- xdbg("incoming reply\n");
- if(status=~"[12][0-9][0-9]")
-  route(NATMANAGE);
+	xdbg("incoming reply\n");
+	if(status=~"[12][0-9][0-9]")
+		route(NATMANAGE);
 }
 
 # manage failure routing cases
 failure_route[MANAGE_FAILURE] {
- route(NATMANAGE);
+	route(NATMANAGE);
 
- if (t_is_canceled()) {
-  exit;
- }
+	if (t_is_canceled()) {
+		exit;
+	}
 
 #!ifdef WITH_BLOCK3XX
- # block call redirect based on 3xx replies.
- if (t_check_status("3[0-9][0-9]")) {
-  t_reply("404","Not found");
-  exit;
- }
+	# block call redirect based on 3xx replies.
+	if (t_check_status("3[0-9][0-9]")) {
+		t_reply("404","Not found");
+		exit;
+	}
 #!endif
 
 #!ifdef WITH_VOICEMAIL
- # serial forking
- # - route to voicemail on busy or no answer (timeout)
- if (t_check_status("486|408")) {
-  $du = $null;
-  route(TOVOICEMAIL);
-  exit;
- }
+	# serial forking
+	# - route to voicemail on busy or no answer (timeout)
+	if (t_check_status("486|408")) {
+		$du = $null;
+		route(TOVOICEMAIL);
+		exit;
+	}
 #!endif
 }
