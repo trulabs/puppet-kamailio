@@ -1,6 +1,6 @@
 #nodes.pp
 
-node 'YOUR HOST NAME HERE' {
+node 'YOURHOSTNAMEHERE' {
 
   class { '::kamailio':
     service_manage => true,
