@@ -55,7 +55,7 @@ See LICENSE file.
 
 ##Limitations
 
-This module has been built and tested with Puppet 2.7 and higher.
+This module has been built and tested with Puppet 2.7.
 
 The module has been tested on:
 * Debian 7
