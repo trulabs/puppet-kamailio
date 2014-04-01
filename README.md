@@ -23,7 +23,9 @@ Setup
 -----
 
 Add:
+
     include 'kamailio'
+
 in your node definition.
 
 Run
