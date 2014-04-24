@@ -25,9 +25,24 @@ class kamailio::config (
     notify  => Class['kamailio::service'],
   }
 
+  file { '/etc/kamailio/kamailio-local.cfg':
+    content => template('kamailio/kamailio-local.cfg.erb'),
+    mode    => '0644',
+    notify  => Class['kamailio::service'],
+  }
+
   file { '/etc/default/kamailio':
     content => template('kamailio/etc_default_kamailio.erb'),
     mode    => '0644',
     notify  => Class['kamailio::service'],
   }
+
+  if ($with_tls) {
+    file { '/etc/kamailio/tls.cfg':
+      content => template('kamailio/tls.cfg.erb'),
+      mode    => '0644',
+      notify  => Class['kamailio::service'],
+    }
+  }
+
 }

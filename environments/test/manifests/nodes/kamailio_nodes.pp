@@ -17,5 +17,6 @@ node 'debian7' {
     service_enable => true,
     service_ensure => 'running',
     manage_repo    => true,
+    with_tls       => true,
   }
 }

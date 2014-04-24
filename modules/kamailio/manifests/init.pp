@@ -58,7 +58,8 @@ class kamailio(
   $service_manage = $kamailio::params::service_manage,
   $manage_repo    = $kamailio::params::manage_repo,
   $package_ensure = $kamailio::params::package_ensure,
-  $package_name   = $kamailio::params::package_name
+  $package_name   = $kamailio::params::package_name,
+  $with_tls       = $kamailio::params::with_tls
 ) inherits kamailio::params {
 
   validate_string($package_ensure, $package_name)
@@ -67,8 +68,11 @@ class kamailio(
   class { '::kamailio::install':
     package_ensure => $package_ensure,
     package_name   => $package_name,
+    with_tls       => $with_tls,
   } ->
-  class { '::kamailio::config': }  ->
+  class { '::kamailio::config':
+    with_tls       => $with_tls,
+  }  ->
   class { '::kamailio::service':
     service_ensure => $service_ensure,
     service_manage => $service_manage,

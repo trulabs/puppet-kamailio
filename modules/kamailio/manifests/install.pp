@@ -13,11 +13,18 @@
 
 class kamailio::install (
   $package_ensure,
-  $package_name
+  $package_name,
+  $with_tls
 ) inherits kamailio {
 
   package { 'kamailio':
     ensure => $package_ensure,
     name   => $package_name,
+  }
+
+  if ($with_tls) {
+    package { 'kamailio-tls-modules':
+      ensure => $package_ensure,
+    }
   }
 }
