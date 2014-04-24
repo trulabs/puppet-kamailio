@@ -17,6 +17,6 @@ class kamailio::params {
   $service_manage = false
 
   $manage_repo    = false
-  $package_ensure = 'present'
+  $package_ensure = 'latest'
   $package_name   = 'kamailio'
 }
