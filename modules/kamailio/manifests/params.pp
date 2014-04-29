@@ -21,4 +21,6 @@ class kamailio::params {
   $package_name   = 'kamailio'
 
   $with_tls       = false
+
+  $manage_config  = true
 }

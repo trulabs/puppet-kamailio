@@ -14,7 +14,8 @@
 class kamailio::install (
   $package_ensure,
   $package_name,
-  $with_tls
+  $with_tls,
+  $with_websockets
 ) inherits kamailio {
 
   package { 'kamailio':
@@ -24,6 +25,12 @@ class kamailio::install (
 
   if ($with_tls) {
     package { 'kamailio-tls-modules':
+      ensure => $package_ensure,
+    }
+  }
+
+  if ($with_websockets) {
+    package { 'kamailio-websocket-modules':
       ensure => $package_ensure,
     }
   }

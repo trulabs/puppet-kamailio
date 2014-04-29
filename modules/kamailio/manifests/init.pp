@@ -51,7 +51,19 @@
 # [*package_name*]
 #   String. What package name to use for kamailio.
 #   Default: kamailio
-
+#
+# [*with_tls*]
+#   Boolean. Whether TLS should be enabled.
+#   Default: false
+# 
+# [*manage_config*]
+#   Boolean. Whether Puppet should manage the configuration files.
+#   Default: true
+# 
+# [*with_websocket*]
+#   Boolean. Whether WebSockets should be enabled.
+#   Default: false
+# 
 class kamailio(
   $service_enable = $kamailio::params::service_enable,
   $service_ensure = $kamailio::params::service_ensure,
@@ -59,19 +71,24 @@ class kamailio(
   $manage_repo    = $kamailio::params::manage_repo,
   $package_ensure = $kamailio::params::package_ensure,
   $package_name   = $kamailio::params::package_name,
-  $with_tls       = $kamailio::params::with_tls
+  $with_tls       = $kamailio::params::with_tls,
+  $manage_config  = $kamailio::params::manage_config,
+  $with_websockets = $kamailio::params::with_websockets,
 ) inherits kamailio::params {
 
   validate_string($package_ensure, $package_name)
-  validate_bool($service_enable, $service_manage, $manage_repo)
+  validate_bool($service_enable, $service_manage, $manage_repo, $manage_config)
 
   class { '::kamailio::install':
-    package_ensure => $package_ensure,
-    package_name   => $package_name,
-    with_tls       => $with_tls,
+    package_ensure  => $package_ensure,
+    package_name    => $package_name,
+    with_tls        => $with_tls,
+    with_websockets => $with_websockets,
   } ->
   class { '::kamailio::config':
-    with_tls       => $with_tls,
+    with_tls        => $with_tls,
+    with_websockets => $with_websockets,
+    manage_config   => $manage_config,
   }  ->
   class { '::kamailio::service':
     service_ensure => $service_ensure,
