@@ -21,7 +21,7 @@ class kamailio::repo::apt inherits kamailio::repo {
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
     key               => '07D5C01D',
-    key_server        => 'http://deb.kamailio.org/kamailiodebkey.gpg',
+    key_source        => 'http://deb.kamailio.org/kamailiodebkey.gpg',
     include_src       => true,
   }
 
