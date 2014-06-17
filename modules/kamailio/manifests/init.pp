@@ -64,6 +64,10 @@
 #   Boolean. Whether WebSockets should be enabled.
 #   Default: false
 # 
+# [*with_ephem_auth*]
+#   Boolean. Whether the ephemeral authentication module should be installed.
+#   Default: false
+# 
 class kamailio(
   $service_enable = $kamailio::params::service_enable,
   $service_ensure = $kamailio::params::service_ensure,
@@ -74,16 +78,19 @@ class kamailio(
   $with_tls       = $kamailio::params::with_tls,
   $manage_config  = $kamailio::params::manage_config,
   $with_websockets = $kamailio::params::with_websockets,
+  $with_ephem_auth = $kamailio::params::with_ephem_auth,
 ) inherits kamailio::params {
 
   validate_string($package_ensure, $package_name)
   validate_bool($service_enable, $service_manage, $manage_repo, $manage_config)
+  validate_bool($with_tls, $with_websockets, $with_ephem_auth)
 
   class { '::kamailio::install':
     package_ensure  => $package_ensure,
     package_name    => $package_name,
     with_tls        => $with_tls,
     with_websockets => $with_websockets,
+    with_ephem_auth => $with_ephem_auth,
   } ->
   class { '::kamailio::config':
     with_tls        => $with_tls,

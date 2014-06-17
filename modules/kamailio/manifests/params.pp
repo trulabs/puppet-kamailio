@@ -21,6 +21,8 @@ class kamailio::params {
   $package_name   = 'kamailio'
 
   $with_tls       = false
+  $with_websockets = false
+  $with_ephem_auth = false
 
   $manage_config  = true
 }
