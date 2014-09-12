@@ -11,7 +11,7 @@ Puppet module for Kamailio
 Overview
 --------
 
-The kamailio module provides a simple interface for managing Kamailio deployments with Puppet.
+This module provides a simple interface for managing Kamailio deployments with Puppet.
 
 Module Description
 ------------------
@@ -22,25 +22,25 @@ Kamailio is a very fast and configurable SIP proxy.
 Setup
 -----
 
-Add:
+For the minimal setup, add:
 
     include 'kamailio'
 
-in your node definition.
+in your manifest.
 
-Run
----
-    sudo puppet apply -v environments/ENVIRONMENT/manifests/site.pp --modulepath modules/:/etc/puppet/modules/ --show_diff --noop
+You may want to configure a few options, e.g.:
 
-Install a 3rd party module
---------------------------
+    class { '::kamailio':
+        service_manage  => true,
+        service_enable  => true,
+        service_ensure  => 'running',
+        manage_repo     => true,
+        with_tls        => true,
+        with_websockets => true,
+        with_ephem_auth => true,
+        manage_config   => false,
+    }
 
-    sudo puppet module install
-
-Run puppet-lint
----------------
-
-    puppet-lint --no-80chars-check --with-filename modules/kamailio/manifests/
 
 Author
 ------
