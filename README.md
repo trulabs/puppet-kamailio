@@ -41,6 +41,12 @@ You may want to configure a few options, e.g.:
         manage_config   => false,
     }
 
+**Parameters:**
+
+#####`service_manage`
+
+If set to true, Puppet takes care of the service according to `service_enable` and `service_ensure`. Default is 'true'.
+
 
 Author
 ------
