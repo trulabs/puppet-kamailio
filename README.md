@@ -47,6 +47,35 @@ You may want to configure a few options, e.g.:
 
 If set to true, Puppet takes care of the service according to `service_enable` and `service_ensure`. Default is 'true'.
 
+#####`service_enable`
+
+Configures whether Kamailio should be enabled. Applies if `service_manage` is true. Default is 'true'.
+
+#####`service_ensure`
+
+If `service_manage` is true and `service_enable` is true, this parameter tells Puppet whether Kamailio should be running. Default is 'running'.
+
+
+#####`manage_repo`
+
+TODO
+
+#####`with_tls`
+
+TODO
+
+#####`with_websockets`
+
+TODO
+
+#####`with_ephem_auth`
+
+TODO
+
+#####`manage_config`
+
+TODO
+
 
 Author
 ------
