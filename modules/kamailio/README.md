@@ -76,6 +76,10 @@ Whether the ephemeral authentication module should be installed.
 
 Should Puppet deploy the configuration files?
 
+#####`package_ensure`
+
+Version or status of the package, e.g. 'latest' (which is also default) or '4.1.6+wheezy'
+
 
 Author
 ------
