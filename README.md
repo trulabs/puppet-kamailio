@@ -58,23 +58,23 @@ If `service_manage` is true and `service_enable` is true, this parameter tells P
 
 #####`manage_repo`
 
-TODO
+Should Puppet manage apt sources?
 
 #####`with_tls`
 
-TODO
+Whether TLS should be enabled, plus basic configuration.
 
 #####`with_websockets`
 
-TODO
+Whether the WebSockets module should be installed.
 
 #####`with_ephem_auth`
 
-TODO
+Whether the ephemeral authentication module should be installed.
 
 #####`manage_config`
 
-TODO
+Should Puppet deploy the configuration files?
 
 
 Author
