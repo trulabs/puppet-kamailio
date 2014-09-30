@@ -92,6 +92,11 @@ License
 
 See LICENSE file.
 
+##Tests
+
+Run tests with:
+    sudo puppet apply -v tests/init.pp --modulepath modules/:/etc/puppet/modules --show_diff --noop
+
 ##Limitations
 
 This module has been built and tested with Puppet 2.7.
