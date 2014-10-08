@@ -1,9 +1,6 @@
-apt-get update
-apt-get install -y puppet
-puppet module install puppetlabs-apt
+apt-get update && apt-get install -y puppet
+
+## This will also pull puppetlabs-apt and puppetlabs-stdlib
 puppet module install trulabs-kamailio
-mkdir puppet-kamailio && cd puppet-kamailio/
-echo "node 'default' { class { 'kamailio': manage_repo => true }}" > site.pp
-puppet apply -v site.pp --modulepath .:/etc/puppet/modules/ --show_diff --noop
-puppet apply -v site.pp --modulepath .:/etc/puppet/modules/ --show_diff
-dpkg -l kamailio
+
+puppet apply -v /etc/puppet/modules/asterisk/tests/init.pp --show_diff --noop
