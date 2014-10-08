@@ -26,22 +26,22 @@ class kamailio::install (
 
   if ($with_tls) {
     package { 'kamailio-tls-modules':
-      ensure   => $package_ensure,
-      requires => Package['kamailio'],
+      ensure  => $package_ensure,
+      require => Package['kamailio'],
     }
   }
 
   if ($with_websockets) {
     package { 'kamailio-websocket-modules':
-      ensure   => $package_ensure,
-      requires => Package['kamailio'],
+      ensure  => $package_ensure,
+      require => Package['kamailio'],
     }
   }
 
   if ($with_ephem_auth) {
     package { 'kamailio-autheph-modules':
-      ensure   => $package_ensure,
-      requires => Package['kamailio'],
+      ensure  => $package_ensure,
+      require => Package['kamailio'],
     }
   }
 }
