@@ -16,7 +16,7 @@ class kamailio::repo::apt inherits kamailio::repo {
 
   apt::source { 'kamailio_wheezy':
     location          => 'http://deb.kamailio.org/kamailio',
-    release           => 'wheezy',
+    release           => $::lsbdistcodename,
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
     key               => '07D5C01D',
