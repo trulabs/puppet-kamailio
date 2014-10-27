@@ -14,9 +14,8 @@
 class kamailio::repo::apt inherits kamailio::repo {
   include '::apt'
 
-  # Note the 41! (4.1)
-  apt::source { 'kamailio41_wheezy':
-    location          => 'http://deb.kamailio.org/kamailio41',
+  apt::source { 'kamailio_wheezy':
+    location          => 'http://deb.kamailio.org/kamailio',
     release           => 'wheezy',
     repos             => 'main',
     required_packages => 'debian-keyring debian-archive-keyring',
@@ -25,5 +24,5 @@ class kamailio::repo::apt inherits kamailio::repo {
     include_src       => true,
   }
 
-  Apt::Source['kamailio41_wheezy'] -> Package<|tag == 'kamailio'|>
+  Apt::Source['kamailio_wheezy'] -> Package<|tag == 'kamailio'|>
 }
