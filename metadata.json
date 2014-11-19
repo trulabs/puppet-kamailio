@@ -1,0 +1,20 @@
+{
+  "author": "trulabs",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib"
+    },
+    {
+      "name": "puppetlabs/apt"
+    }
+  ],
+  "license": "see LICENSE",
+  "name": "trulabs-kamailio",
+  "operatingsystem_support": [],
+  "project_page": "http://github.com/trulabs/puppet-kamailio",
+  "requirements": [],
+  "source": "git://github.com/trulabs/puppet-kamailio",
+  "summary": "A module for managing Kamailio deployments with Puppet.",
+  "tags": [],
+  "version": "0.0.7"
+}
