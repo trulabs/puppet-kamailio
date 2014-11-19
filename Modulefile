@@ -9,3 +9,4 @@ project_page 'http://github.com/trulabs/puppet-kamailio'
 
 ## Add dependencies, if any:
 dependency 'puppetlabs/apt'
+dependency 'puppetlabs/stdlib'
