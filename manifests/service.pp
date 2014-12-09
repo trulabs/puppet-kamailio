@@ -27,9 +27,6 @@ class kamailio::service (
       enable     => $service_enable,
       hasstatus  => true,
       hasrestart => true,
-      restart    => '/etc/init.d/kamailio restart',
-      start      => '/etc/init.d/kamailio start',
-      stop       => '/etc/init.d/kamailio stop',
     }
   }
 }
