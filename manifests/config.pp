@@ -34,9 +34,11 @@ class kamailio::config (
       notify  => Class['kamailio::service'],
     }
 
-    file { "${etc_dir}/kamailio":
-      content => template('kamailio/etc_default_kamailio.erb'),
-      notify  => Class['kamailio::service'],
+    if ($::osfamily == 'Debian') {
+      file { '/etc/default/kamailio':
+        content => template('kamailio/etc_default_kamailio.erb'),
+        notify  => Class['kamailio::service'],
+      }
     }
 
     if ($with_tls) {
