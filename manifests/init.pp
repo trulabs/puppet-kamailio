@@ -27,8 +27,8 @@
 # === Parameters
 #
 # [*service_enable*]
-#   Boolean.
-#   Default: false.
+#   Boolean. Whether Kamailio should be enabled.
+#   Default: false
 #
 # [*service_ensure*]
 #   String. Ensure the service is running or stopped.
@@ -45,12 +45,12 @@
 #
 # [*package_ensure*]
 #   String. Ensure the package is present or not.
-#   Options: present, latest, absent
+#   Options: present, latest, absent or a version.
 #   Default: present
 #
 # [*package_name*]
 #   String. What package name to use for kamailio.
-#   Default: kamailio
+#   Default: 'kamailio'
 #
 # [*with_tls*]
 #   Boolean. Whether TLS should be enabled.
@@ -69,38 +69,38 @@
 #   Default: false
 #
 class kamailio(
-  $service_enable = $kamailio::params::service_enable,
-  $service_ensure = $kamailio::params::service_ensure,
-  $service_manage = $kamailio::params::service_manage,
-  $manage_repo    = $kamailio::params::manage_repo,
-  $package_ensure = $kamailio::params::package_ensure,
-  $package_name   = $kamailio::params::package_name,
-  $with_tls       = $kamailio::params::with_tls,
-  $manage_config  = $kamailio::params::manage_config,
-  $with_websockets = $kamailio::params::with_websockets,
+  $manage_config   = $kamailio::params::manage_config,
+  $manage_repo     = $kamailio::params::manage_repo,
+  $package_ensure  = $kamailio::params::package_ensure,
+  $package_name    = $kamailio::params::package_name,
+  $service_enable  = $kamailio::params::service_enable,
+  $service_ensure  = $kamailio::params::service_ensure,
+  $service_manage  = $kamailio::params::service_manage,
   $with_ephem_auth = $kamailio::params::with_ephem_auth,
+  $with_tls        = $kamailio::params::with_tls,
+  $with_websockets = $kamailio::params::with_websockets,
 ) inherits kamailio::params {
 
+  validate_bool($manage_config, $manage_repo, $service_enable, $service_manage)
+  validate_bool($with_ephem_auth, $with_tls, $with_websockets)
   validate_string($package_ensure, $package_name)
-  validate_bool($service_enable, $service_manage, $manage_repo, $manage_config)
-  validate_bool($with_tls, $with_websockets, $with_ephem_auth)
 
   class { '::kamailio::install':
     package_ensure  => $package_ensure,
     package_name    => $package_name,
+    with_ephem_auth => $with_ephem_auth,
     with_tls        => $with_tls,
     with_websockets => $with_websockets,
-    with_ephem_auth => $with_ephem_auth,
   } ->
   class { '::kamailio::config':
+    manage_config   => $manage_config,
     with_tls        => $with_tls,
     with_websockets => $with_websockets,
-    manage_config   => $manage_config,
   }  ->
   class { '::kamailio::service':
+    service_enable => $service_enable,
     service_ensure => $service_ensure,
     service_manage => $service_manage,
-    service_enable => $service_enable,
   }
 
   if ($manage_repo) {
