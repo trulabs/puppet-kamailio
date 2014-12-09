@@ -14,9 +14,9 @@
 class kamailio::install (
   $package_ensure,
   $package_name,
+  $with_ephem_auth,
   $with_tls,
-  $with_websockets,
-  $with_ephem_auth
+  $with_websockets
 ) inherits kamailio {
 
   package { 'kamailio':
