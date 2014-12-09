@@ -13,9 +13,9 @@
 
 class kamailio::config (
   $etc_dir,
-  $with_tls = false,
-  $with_websockets = false,
-  $manage_config = true
+  $with_tls,
+  $with_websockets,
+  $manage_config
 ) inherits kamailio {
   File {
     owner => 'root',
