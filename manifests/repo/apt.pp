@@ -13,8 +13,16 @@
 
 class kamailio::repo::apt inherits kamailio::repo {
   include '::apt'
+  
+  if !($::lsbdistcodename in ['jessie', 'precise', 'squeeze', 'wheezy']) {
+    warning("Unsupported Debian distro")
+  }
+  
+  # Available are: jessie, precise, squeeze, trusty, wheezy 
 
-  apt::source { 'kamailio_wheezy':
+  $apt_source_repo = "kamailio_${::lsbdistcodename}" 
+
+  apt::source { $apt_source_repo:
     location          => 'http://deb.kamailio.org/kamailio',
     release           => $::lsbdistcodename,
     repos             => 'main',
@@ -24,5 +32,5 @@ class kamailio::repo::apt inherits kamailio::repo {
     include_src       => true,
   }
 
-  Apt::Source['kamailio_wheezy'] -> Package<|tag == 'kamailio'|>
+  Apt::Source[$apt_source_repo] -> Package<|tag == 'kamailio'|>
 }
