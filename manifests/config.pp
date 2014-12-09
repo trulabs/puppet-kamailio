@@ -12,6 +12,7 @@
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class kamailio::config (
+  $etc_dir,
   $with_tls = false,
   $with_websockets = false,
   $manage_config = true
@@ -19,31 +20,28 @@ class kamailio::config (
   File {
     owner => 'root',
     group => 'root',
+    mode  => '0644',
   }
 
   if ($manage_config) {
-    file { '/etc/kamailio/kamailio-default.cfg':
+    file { "${etc_dir}/kamailio-default.cfg":
       content => template('kamailio/kamailio.cfg.erb'),
-      mode    => '0644',
       notify  => Class['kamailio::service'],
     }
 
-    file { '/etc/kamailio/kamailio-local.cfg':
+    file { "${etc_dir}/kamailio-local.cfg":
       content => template('kamailio/kamailio-local.cfg.erb'),
-      mode    => '0644',
       notify  => Class['kamailio::service'],
     }
 
-    file { '/etc/default/kamailio':
+    file { "${etc_dir}/kamailio":
       content => template('kamailio/etc_default_kamailio.erb'),
-      mode    => '0644',
       notify  => Class['kamailio::service'],
     }
 
     if ($with_tls) {
-      file { '/etc/kamailio/tls.cfg':
+      file { "${etc_dir}/tls.cfg":
         content => template('kamailio/tls.cfg.erb'),
-        mode    => '0644',
         notify  => Class['kamailio::service'],
       }
     }

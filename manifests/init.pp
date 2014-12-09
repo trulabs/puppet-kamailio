@@ -69,6 +69,7 @@
 #   Default: false
 #
 class kamailio(
+  $etc_dir         = $kamailio::params::etc_dir,
   $manage_config   = $kamailio::params::manage_config,
   $manage_repo     = $kamailio::params::manage_repo,
   $package_ensure  = $kamailio::params::package_ensure,
@@ -93,6 +94,7 @@ class kamailio(
     with_websockets => $with_websockets,
   } ->
   class { '::kamailio::config':
+    etc_dir         => $etc_dir,
     manage_config   => $manage_config,
     with_tls        => $with_tls,
     with_websockets => $with_websockets,
