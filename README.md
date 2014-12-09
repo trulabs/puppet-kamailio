@@ -3,7 +3,7 @@ puppet-kamailio
 
 ## Description
 
-Puppet module for Kamailio
+Install and configure Kamailio (http://www.kamailio.org/)
 
 
 =======
